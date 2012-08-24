@@ -2,6 +2,7 @@
 # - title        : Disable ALL Offloading
 # - description  : This script will assist in Disabling ALL TCP Offloading.
 # - author       : Kevin Carter
+# - License      : GPLv3
 # - date         : 2012-05-15
 # - version      : 1.0    
 # - usage        : bash offloadingdisableforslice.sh
