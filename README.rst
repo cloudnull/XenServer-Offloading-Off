@@ -61,7 +61,7 @@ After running the application all TCP offloading will be turned off on what ever
 
 .. code-block:: bash
 
-  for ETHADP in`ip addr|awk '/eth[0-9]/ {print $2}' | sed 's/://g'`; do ethtool -K ${ETHADP} rx off tx off sg off gso off sgo off tso off; done;
+  for ETHADP in `ip addr | awk '/eth[0-9]/ {print $2}' | sed 's/://g'`; do ethtool -K ${ETHADP} rx off tx off sg off gso off sgo off tso off; done;
 
 Again you can get more information on the process to disable TCP Offloading on XenServer from here : `XenServer Network Tuning`_
 
