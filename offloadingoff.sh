@@ -6,7 +6,7 @@
 # - date         : 2012-05-15
 # - version      : 1.0    
 # - usage        : bash offloadingdisableforslice.sh
-# - notes        : This Disables all offloading for the PIF and VIF and the entire host.  
+# - notes        : This Disables all offloading for the VIF and the Physical Interfaces.  
 # - bash_version : >= 3.2.48(1)-release
 #### ========================================= ####
 
@@ -14,28 +14,24 @@ SLICEID="$1";
 
 SLICEOFFLOADINGOFF(){
 	echo "Disabling Offloading for the entire Host";
-		for ETHADP in `ip addr|awk '/eth[0-9]/ {print $2}'|sed 's/://g'`; do ethtool -K ${ETHADP} rx off tx off sg off gso off sgo off tso off; done; 
+		for ETHADP in `ip addr | awk '/eth[0-9]/ {print $2}'|sed 's/://g'`; do ethtool -K ${ETHADP} rx off tx off sg off gso off sgo off tso off; done; 
 
-	VMUUID=`xe vm-list name-label=${SLICEID}|awk '/uuid/ {print $5}'`; 
+	VMUUID=`xe vm-list name-label=${SLICEID} | awk '/uuid/ {print $5}'`; 
 
 		echo "Disabling Offloading on the VIF for the specified Instance ID.";
 			for VIFUUID in `xe vif-list vm-uuid=${VMUUID} | awk '/uuid/ {print $5}'|sed '/^$/d'`; do xe vif-param-set uuid=${VIFUUID} other-config:ethtool-gso=”off”; xe vif-param-set uuid=${VIFUUID} other-config:ethtool-ufo=”off”; xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tso=”off”; xe vif-param-set uuid=${VIFUUID} other-config:ethtool-sg=”off”; xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tx=”off”; xe vif-param-set uuid=${VIFUUID} other-config:ethtool-rx=”off”; done; 
-
-		echo "Disabling Offloading on the PIF for the specified Instance ID.";
-			for PIFUUID in `xe pif-list |awk '/uuid/ {print $5}'|sed '/^$/d'`; do xe pif-param-set uuid=${PIFUUID} other-config:ethtool-gso=”off”; xe pif-param-set uuid=${PIFUUID} other-config:ethtool-ufo=”off”; xe pif-param-set uuid=${PIFUUID} other-config:ethtool-tso=”off”; xe pif-param-set uuid=${PIFUUID} other-config:ethtool-sg=”off”; xe pif-param-set uuid=${PIFUUID} other-config:ethtool-tx=”off”; xe pif-param-set uuid=${PIFUUID} other-config:ethtool-rx=”off”; done; 
 
 	echo "All Done..."
 	echo "All of the TCP Offloading for Instace \"${SLICEID}\" that can be off, has been turned off."
 
 	unset VMUUID;
-
 unset SLICEID; 
 
 }
 
 ALLOFFLOADINGOFF(){
 	echo "Disabling Offloading for the entire Host";
-		for ETHADP in `ip addr|awk '/eth[0-9]/ {print $2}'|sed 's/://g'`; do ethtool -K ${ETHADP} rx off tx off sg off gso off sgo off tso off; done; 
+		for ETHADP in `ip addr | awk '/eth[0-9]/ {print $2}'|sed 's/://g'`; do ethtool -K ${ETHADP} rx off tx off sg off gso off sgo off tso off; done; 
 
 for INSTANCEID in `xe vm-list | awk '/name-label/' | grep -v 'Control domain' | awk '{print $4}'` 
 
@@ -43,12 +39,9 @@ do
 	VMUUID=`xe vm-list name-label=${INSTANCEID}|awk '/uuid/ {print $5}'`; 
 		echo "Offloading done on \"${INSTANCEID}\""
 			for VIFUUID in `xe vif-list vm-uuid=${VMUUID} | awk '/uuid/ {print $5}'|sed '/^$/d'`; do xe vif-param-set uuid=${VIFUUID} other-config:ethtool-gso=”off”; xe vif-param-set uuid=${VIFUUID} other-config:ethtool-ufo=”off”; xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tso=”off”; xe vif-param-set uuid=${VIFUUID} other-config:ethtool-sg=”off”; xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tx=”off”; xe vif-param-set uuid=${VIFUUID} other-config:ethtool-rx=”off”; done; 
-			for PIFUUID in `xe pif-list |awk '/uuid/ {print $5}'|sed '/^$/d'`; do xe pif-param-set uuid=${PIFUUID} other-config:ethtool-gso=”off”; xe pif-param-set uuid=${PIFUUID} other-config:ethtool-ufo=”off”; xe pif-param-set uuid=${PIFUUID} other-config:ethtool-tso=”off”; xe pif-param-set uuid=${PIFUUID} other-config:ethtool-sg=”off”; xe pif-param-set uuid=${PIFUUID} other-config:ethtool-tx=”off”; xe pif-param-set uuid=${PIFUUID} other-config:ethtool-rx=”off”; done; 
 
 		unset VMUUID;
-
 	unset INSTANCEID; 
-
 done;
 
 	echo "All Done..."
