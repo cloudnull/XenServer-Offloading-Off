@@ -36,12 +36,12 @@ SLICEOFFLOADINGOFF(){
 
 	echo -n "Disabling Offloading on the VIF for the specified Instance ID "
 	for VIFUUID in $(xe vif-list vm-uuid=${VMUUID} | awk '/uuid/ {print $5}' | sed '/^$/d') ; do
-		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-gso=”off”
-		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-ufo=”off”
-		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tso=”off”
-		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-sg=”off”
-		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tx=”off”
-		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-rx=”off”
+		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-gso="off"
+		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-ufo="off"
+		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tso="off"
+		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-sg="off"
+		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tx="off"
+		xe vif-param-set uuid=${VIFUUID} other-config:ethtool-rx="off"
 	done
 
 	echo "done."
@@ -72,16 +72,17 @@ ALLOFFLOADINGOFF(){
 	done
 	echo "done."
 
-	for INSTANCEID in $(xe vm-list | awk '/name-label/' | grep -v 'Control domain' | awk '{print $4}') ; do
-		VMUUID=$(xe vm-list name-label=${INSTANCEID} | awk '/uuid/ {print $5}')
+	xe vm-list | awk '/name-label/' | grep -v 'Control domain' | awk '{split($0,a,": " ); print a[2]}' | while read INSTANCEID; do
+		VMUUID=$(xe vm-list name-label="${INSTANCEID}" | awk '/uuid/ {print $5}')
 		echo -n "Disabling offloading on instance \"${INSTANCEID}\" "
 		for VIFUUID in $(xe vif-list vm-uuid=${VMUUID} | awk '/uuid/ {print $5}'| sed '/^$/d') ; do
-			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-gso=”off”
-			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-ufo=”off”
-			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tso=”off”
-			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-sg=”off”
-			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tx=”off”
-			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-rx=”off”
+			echo -n "${VIFUUID} "
+			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-gso="off"
+			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-ufo="off"
+			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tso="off"
+			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-sg="off"
+			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-tx="off"
+			xe vif-param-set uuid=${VIFUUID} other-config:ethtool-rx="off"
 		done
 		echo "done."
 
