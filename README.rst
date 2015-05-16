@@ -66,4 +66,4 @@ After running the application all TCP offloading will be turned off on what ever
 Again you can get more information on the process to disable TCP Offloading on XenServer from here : `XenServer Network Tuning`_
 
 
-.. _XenServer Network Tuning: http://rackerua.com/2012/07/xenserver-network-tuning/
+.. _XenServer Network Tuning: http://cloudnull.io/2012/07/xenserver-network-tuning/
